@@ -147,6 +147,7 @@ window.spinnakerSettings = {
     gce: gce,
     huaweicloud: huaweicloud,
     kubernetes: {},
+    cloudrun: {},
     oracle: oracle,
     tencentcloud: tencentcloud,
   },
