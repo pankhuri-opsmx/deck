@@ -27,10 +27,10 @@ class CloudrunStageAllocationLabelCtrl implements IController {
   private setInputViewValue(): void {
     switch (this.allocationDescription.locatorType) {
       case 'text':
-        this.inputViewValue = this.allocationDescription.serverGroupName;
+        this.inputViewValue = this.allocationDescription.revisionName;
         break;
       case 'fromExisting':
-        this.inputViewValue = this.allocationDescription.serverGroupName;
+        this.inputViewValue = this.allocationDescription.revisionName;
         break;
       case 'targetCoordinate':
         if (this.allocationDescription.cluster && this.allocationDescription.target) {
@@ -71,8 +71,8 @@ class CloudrunStageAllocationConfigurationRowCtrl implements IController {
   }
 
   public getServerGroupOptions(): string[] {
-    if (this.allocationDescription.serverGroupName) {
-      return uniq(this.serverGroupOptions.concat(this.allocationDescription.serverGroupName));
+    if (this.allocationDescription.revisionName) {
+      return uniq(this.serverGroupOptions.concat(this.allocationDescription.revisionName));
     } else {
       return this.serverGroupOptions;
     }
@@ -80,8 +80,8 @@ class CloudrunStageAllocationConfigurationRowCtrl implements IController {
 
   public onLocatorTypeChange(): void {
     // Prevents pipeline expressions (or non-existent server groups) from entering the dropdown.
-    if (!this.serverGroupOptions.includes(this.allocationDescription.serverGroupName)) {
-      delete this.allocationDescription.serverGroupName;
+    if (!this.serverGroupOptions.includes(this.allocationDescription.revisionName)) {
+      delete this.allocationDescription.revisionName;
     }
     this.onAllocationChange();
   }

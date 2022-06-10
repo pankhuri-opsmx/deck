@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { module } from 'angular';
 //import type { IQService } from 'angular';
 //import { load } from 'js-yaml';
@@ -7,7 +8,7 @@ import { $q } from 'ngimport';
 import type {
   Application,
   IAccountDetails,
-  IExpectedArtifact,
+  //IExpectedArtifact,
   IMoniker,
   IPipeline,
   IServerGroupCommand,
@@ -98,8 +99,6 @@ export class CloudrunV2ServerGroupCommandBuilder {
   public buildNewServerGroupCommandForPipeline(_stage: IStage, pipeline: IPipeline) {
     // eslint-disable-next-line no-debugger
     debugger;
-    /*     let app : Application
-    let cluster : ICloudrunServerGroupCommand */
     return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommandForPipeline(_stage, pipeline);
   }
 }
@@ -138,6 +137,7 @@ export class CloudrunServerGroupCommandBuilder {
   ): PromiseLike<ICloudrunServerGroupCommandData> {
     return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'create').then(
       (command: ICloudrunServerGroupCommandData) => {
+        debugger;
         command = {
           ...command,
           ...cluster,
@@ -158,33 +158,15 @@ export class CloudrunServerGroupCommandBuilder {
     );
   }
 
-  public static buildNewServerGroupCommandForPipeline(
-    _stage: IStage,
-    pipeline: IPipeline,
-  ): PromiseLike<{
-    viewState: {
-      stage: IStage;
-      pipeline: IPipeline;
+  public static buildNewServerGroupCommandForPipeline(stage: IStage, pipeline: IPipeline): any {
+    const command: any = this.buildNewServerGroupCommand({ name: pipeline.application } as Application);
+    command.viewState = {
+      ...command.viewState,
+      pipeline,
+      requiresTemplateSelection: true,
+      stage,
     };
-    backingData: {
-      // triggerOptions: Array<IAppengineGitTrigger | IAppengineJenkinsTrigger>;
-      expectedArtifacts: IExpectedArtifact[];
-    };
-  }> {
-    // eslint-disable-next-line no-debugger
-    debugger;
-    // We can't copy server group configuration for App Engine, and can't build the full command here because we don't have
-    // access to the application.
-    return $q.when({
-      viewState: {
-        pipeline,
-        stage: _stage,
-      },
-      backingData: {
-        // triggerOptions: AppengineServerGroupCommandBuilder.getTriggerOptions(pipeline),
-        expectedArtifacts: CloudrunServerGroupCommandBuilder.getExpectedArtifacts(pipeline),
-      },
-    });
+    return command;
   }
 
   public static buildNewServerGroupCommand(

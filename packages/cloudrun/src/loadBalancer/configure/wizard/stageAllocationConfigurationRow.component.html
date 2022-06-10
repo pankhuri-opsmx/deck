@@ -8,7 +8,7 @@
       <div class="input-group input-group-sm">
         <input
           type="number"
-          ng-model="$ctrl.allocationDescription.allocation"
+          ng-model="$ctrl.allocationDescription.percent"
           required
           class="form-control input-sm"
           min="0"
@@ -73,7 +73,7 @@
           <div class="col-md-3 sm-label-right" style="padding-left: 0px">Server group</div>
           <div class="col-md-7">
             <ui-select
-              ng-model="$ctrl.allocationDescription.serverGroupName"
+              ng-model="$ctrl.allocationDescription.revisionName"
               on-select="$ctrl.onAllocationChange()"
               class="form-control input-sm"
             >

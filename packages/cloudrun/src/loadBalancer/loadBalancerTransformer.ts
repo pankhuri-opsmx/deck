@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { module } from 'angular';
 import { camelCase, chain, cloneDeep, filter, get, has, reduce } from 'lodash';
 
@@ -9,18 +10,21 @@ import type {
   ILoadBalancerUpsertCommand,
   IServerGroup,
 } from '@spinnaker/core';
-import type { ICloudrunLoadBalancer, ICloudrunTrafficSplit, ShardBy } from '../common/domain/index';
+//import type { ICloudrunLoadBalancer, ICloudrunTrafficSplit, ShardBy } from '../common/domain/index';
+import type { ICloudrunLoadBalancer, ICloudrunTrafficSplit } from '../common/domain/index';
 
 export interface ICloudrunAllocationDescription {
-  serverGroupName?: string;
+  //serverGroupName?: string;
+  revisionName?: string;
   target?: string;
   cluster?: string;
-  allocation: number;
+  //allocation: number;
+  percent: number;
   locatorType: 'fromExisting' | 'targetCoordinate' | 'text';
 }
 
 export interface ICloudrunTrafficSplitDescription {
-  shardBy: ShardBy;
+  //shardBy: ShardBy;
   allocationDescriptions: ICloudrunAllocationDescription[];
 }
 
@@ -39,18 +43,17 @@ export class CloudrunLoadBalancerUpsertDescription implements ILoadBalancerUpser
   public static convertTrafficSplitToTrafficSplitDescription(
     split: ICloudrunTrafficSplit,
   ): ICloudrunTrafficSplitDescription {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const allocationDescriptions = reduce(
-      split.allocations,
-      (acc: ICloudrunAllocationDescription[], allocation: number, serverGroupName: string) => {
-        return acc.concat({ serverGroupName, allocation, locatorType: 'fromExisting' });
+      split.trafficTargets,
+      (acc: any, trafficTarget: any) => {
+        const { revisionName, percent } = trafficTarget;
+        //console.log("trafficTarget",trafficTarget,acc, revisionName, percent)
+        return acc.concat({ percent, revisionName, locatorType: 'fromExisting' });
       },
       [],
     );
-    // eslint-disable-next-line no-console
-    console.log('allD', allocationDescriptions);
-    return { shardBy: split.shardBy, allocationDescriptions };
+    // console.log(allocationDescriptions)
+    return { allocationDescriptions };
   }
 
   constructor(loadBalancer: ICloudrunLoadBalancer) {
@@ -66,14 +69,14 @@ export class CloudrunLoadBalancerUpsertDescription implements ILoadBalancerUpser
 
   public mapAllocationsToDecimals() {
     this.splitDescription.allocationDescriptions.forEach((description) => {
-      description.allocation = description.allocation / 100;
+      description.percent = description.percent / 100;
     });
   }
 
   public mapAllocationsToPercentages() {
     this.splitDescription.allocationDescriptions.forEach((description) => {
       // An allocation percent has at most one decimal place.
-      description.allocation = Math.round(description.allocation * 1000) / 10;
+      description.percent = Math.round(description.percent * 1000) / 1000;
     });
   }
 }

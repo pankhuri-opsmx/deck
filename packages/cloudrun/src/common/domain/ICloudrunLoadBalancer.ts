@@ -8,8 +8,10 @@ export interface ICloudrunLoadBalancer extends ILoadBalancer {
 }
 
 export interface ICloudrunTrafficSplit {
-  shardBy: ShardBy;
-  allocations: { [serverGroupName: string]: number };
+  //shardBy: ShardBy;
+  //allocations: { [serverGroupName: string]: number };
+
+  trafficTargets: [{ revisionName: string; percent: number }];
 }
 
 export interface ICloudrunDispatchRule {
@@ -18,4 +20,4 @@ export interface ICloudrunDispatchRule {
   service: string;
 }
 
-export type ShardBy = 'UNSPECIFIED' | 'IP' | 'COOKIE';
+//export type ShardBy = 'UNSPECIFIED' | 'IP' | 'COOKIE';

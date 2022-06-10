@@ -73,17 +73,17 @@
     </collapsible-section> -->
     <collapsible-section heading="Traffic Split" expanded="true">
       <dl class="dl-horizontal dl-narrow">
-        <dt ng-if="ctrl.loadBalancer.split.shardBy">Shard By</dt>
+        <!-- <dt ng-if="ctrl.loadBalancer.split.shardBy">Shard By</dt>
         <dd ng-if="ctrl.loadBalancer.split.shardBy">
           {{ctrl.loadBalancer.split.shardBy}}
           <help-field
             key="cloudrun.loadBalancer.shardBy.{{ctrl.loadBalancer.split.shardBy.toLowerCase()}}"
           ></help-field>
         </dd>
-        <hr ng-if="ctrl.loadBalancer.split.shardBy" />
+        <hr ng-if="ctrl.loadBalancer.split.shardBy" /> -->
         <ul>
-          <li ng-repeat="(serverGroup, percent) in ctrl.loadBalancer.split.allocations">
-            {{serverGroup}}:<span class="pull-right">{{percent | decimalToPercent}}</span>
+          <li ng-repeat="trafficTarget in ctrl.loadBalancer.split.trafficTargets">
+            {{trafficTarget.revisionName}}:<span class="pull-right">{{trafficTarget.percent}}</span>
           </li>
         </ul>
       </dl>

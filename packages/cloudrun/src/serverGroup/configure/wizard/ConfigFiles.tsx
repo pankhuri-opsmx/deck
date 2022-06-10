@@ -91,7 +91,7 @@ export class WizardServerGroupConfigFilesSettings extends React.Component<IWizar
 
   public render() {
     const { formik } = this.props;
-    console.log('formmm', formik.values.command.configFiles);
+    //  console.log('formmm', formik.values.command.configFiles);
     return (
       <ServerGroupConfigFilesSettings
         configFiles={formik.values.command.configFiles}

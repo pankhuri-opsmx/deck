@@ -4,8 +4,8 @@ import { module } from 'angular';
 import type { IModalService } from 'angular-ui-bootstrap';
 import { cloneDeep } from 'lodash';
 
-import type { Application, ILoadBalancer } from '@spinnaker/core';
-//import { ConfirmationModalService, LoadBalancerWriter } from '@spinnaker/core';
+import type { Application, ILoadBalancer, ILoadBalancerDeleteCommand } from '@spinnaker/core';
+import { ConfirmationModalService, LoadBalancerWriter } from '@spinnaker/core';
 import type { ICloudrunLoadBalancer } from '../../common/domain/index';
 
 interface ILoadBalancerFromStateParams {
@@ -65,6 +65,35 @@ class CloudrunLoadBalancerDetailsController implements IController {
     }
   }
 
+  public deleteLoadBalancer(): void {
+    const taskMonitor = {
+      application: this.app,
+      title: 'Deleting ' + this.loadBalancer.name,
+    };
+
+    const submitMethod = () => {
+      const loadBalancer: ILoadBalancerDeleteCommand = {
+        cloudProvider: this.loadBalancer.cloudProvider,
+        loadBalancerName: this.loadBalancer.name,
+        credentials: this.loadBalancer.account,
+      };
+      return LoadBalancerWriter.deleteLoadBalancer(loadBalancer, this.app);
+    };
+
+    ConfirmationModalService.confirm({
+      header: 'Really delete ' + this.loadBalancer.name + '?',
+      buttonText: 'Delete ' + this.loadBalancer.name,
+      body: this.getConfirmationModalBodyHtml(),
+      account: this.loadBalancer.account,
+      taskMonitorConfig: taskMonitor,
+      submitMethod,
+    });
+  }
+
+  public canDeleteLoadBalancer(): boolean {
+    return this.loadBalancer.name !== 'default';
+  }
+
   /*   private buildDispatchRules(): void {
     this.dispatchRules = [];
     if (this.loadBalancer && this.loadBalancer.dispatchRules) {
@@ -76,7 +105,7 @@ class CloudrunLoadBalancerDetailsController implements IController {
     }
   } */
 
-  /* private getConfirmationModalBodyHtml(): string {
+  private getConfirmationModalBodyHtml(): string {
     const serverGroupNames = this.loadBalancer.serverGroups.map((serverGroup) => serverGroup.name);
     const hasAny = serverGroupNames ? serverGroupNames.length > 0 : false;
     const hasMoreThanOne = serverGroupNames ? serverGroupNames.length > 1 : false;
@@ -105,7 +134,7 @@ class CloudrunLoadBalancerDetailsController implements IController {
     } else {
       return null;
     }
-  } */
+  }
 
   private autoClose(): void {
     if (this.$scope.$$destroyed) {

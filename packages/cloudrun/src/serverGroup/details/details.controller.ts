@@ -228,13 +228,13 @@ class CloudrunServerGroupDetailsController implements IController {
     app: Application,
   ): { [key: string]: number } {
     const loadBalancer = app.getDataSource('loadBalancers').data.find((toCheck: ICloudrunLoadBalancer): boolean => {
-      const allocations = toCheck.split?.allocations ?? {};
+      const allocations = toCheck.split?.trafficTargets ?? {};
       const enabledServerGroups = Object.keys(allocations);
       return enabledServerGroups.includes(serverGroup.name);
     });
 
     if (loadBalancer) {
-      let allocations = cloneDeep(loadBalancer.split.allocations);
+      let allocations = cloneDeep(loadBalancer.split.trafficTargets);
       delete allocations[serverGroup.name];
       const denominator = reduce(allocations, (partialSum: number, allocation: number) => partialSum + allocation, 0);
       // const precision = loadBalancer.split.shardBy === 'COOKIE' ? 1000 : 100;
