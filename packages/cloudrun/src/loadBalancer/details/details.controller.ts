@@ -18,7 +18,6 @@ class CloudrunLoadBalancerDetailsController implements IController {
   public state = { loading: true };
   private loadBalancerFromParams: ILoadBalancerFromStateParams;
   public loadBalancer: ICloudrunLoadBalancer;
-  //public dispatchRules: string[] = [];
 
   public static $inject = ['$uibModal', '$state', '$scope', 'loadBalancer', 'app'];
   constructor(
@@ -35,9 +34,9 @@ class CloudrunLoadBalancerDetailsController implements IController {
       .then(() => this.extractLoadBalancer());
   }
 
+  // edit loadbalancer to change traffic
+
   public editLoadBalancer(): void {
-    // eslint-disable-next-line no-debugger
-    debugger;
     this.$uibModal.open({
       templateUrl: require('../configure/wizard/wizard.html'),
       controller: 'cloudrunLoadBalancerWizardCtrl as ctrl',
@@ -58,7 +57,6 @@ class CloudrunLoadBalancerDetailsController implements IController {
 
     if (this.loadBalancer) {
       this.state.loading = false;
-      // this.buildDispatchRules();
       this.app.getDataSource('loadBalancers').onRefresh(this.$scope, () => this.extractLoadBalancer());
     } else {
       this.autoClose();
@@ -93,17 +91,6 @@ class CloudrunLoadBalancerDetailsController implements IController {
   public canDeleteLoadBalancer(): boolean {
     return this.loadBalancer.name !== 'default';
   }
-
-  /*   private buildDispatchRules(): void {
-    this.dispatchRules = [];
-    if (this.loadBalancer && this.loadBalancer.dispatchRules) {
-      this.loadBalancer.dispatchRules.forEach((rule) => {
-        if (rule.service === this.loadBalancer.name) {
-          this.dispatchRules.push(rule.domain + rule.path);
-        }
-      });
-    }
-  } */
 
   private getConfirmationModalBodyHtml(): string {
     const serverGroupNames = this.loadBalancer.serverGroups.map((serverGroup) => serverGroup.name);

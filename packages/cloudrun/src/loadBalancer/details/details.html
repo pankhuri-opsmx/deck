@@ -68,19 +68,8 @@
         </dd>
       </dl>
     </collapsible-section>
-    <!-- <collapsible-section heading="Status" expanded="true">
-      <health-counts class="pull-left" container="ctrl.loadBalancer.instanceCounts"></health-counts>
-    </collapsible-section> -->
     <collapsible-section heading="Traffic Split" expanded="true">
       <dl class="dl-horizontal dl-narrow">
-        <!-- <dt ng-if="ctrl.loadBalancer.split.shardBy">Shard By</dt>
-        <dd ng-if="ctrl.loadBalancer.split.shardBy">
-          {{ctrl.loadBalancer.split.shardBy}}
-          <help-field
-            key="cloudrun.loadBalancer.shardBy.{{ctrl.loadBalancer.split.shardBy.toLowerCase()}}"
-          ></help-field>
-        </dd>
-        <hr ng-if="ctrl.loadBalancer.split.shardBy" /> -->
         <ul>
           <li ng-repeat="trafficTarget in ctrl.loadBalancer.split.trafficTargets">
             {{trafficTarget.revisionName}}:<span class="pull-right">{{trafficTarget.percent}}</span>
@@ -88,15 +77,5 @@
         </ul>
       </dl>
     </collapsible-section>
-    <!-- <collapsible-section heading="DNS" expanded="true">
-      <dl class="dl-narrow">
-        <appengine-component-url-details component="ctrl.loadBalancer"></appengine-component-url-details>
-      </dl>
-    </collapsible-section> -->
-    <!--   <collapsible-section heading="Dispatch Rules" expanded="true" ng-if="ctrl.dispatchRules.length > 0">
-      <dl class="dl-horizontal dl-narrow">
-        <span ng-repeat-start="rule in ctrl.dispatchRules">{{rule}}</span><br ng-repeat-end />
-      </dl>
-    </collapsible-section> -->
   </div>
 </div>

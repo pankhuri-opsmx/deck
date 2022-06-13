@@ -1,11 +1,4 @@
-import type {
-  IInstance,
-  ILoadBalancer,
-  IMoniker,
-  ISecurityGroupDetail,
-  IServerGroup,
-  IServerGroupManager,
-} from '@spinnaker/core';
+import type { IInstance, ILoadBalancer, IMoniker, IServerGroup, IServerGroupManager } from '@spinnaker/core';
 
 export interface ICloudrunResource {
   apiVersion: string;
@@ -22,11 +15,6 @@ export interface ICloudrunInstance extends IInstance, ICloudrunResource {
 }
 
 export interface ICloudrunLoadBalancer extends ILoadBalancer, ICloudrunResource {}
-
-export interface ICloudrunSecurityGroup extends ISecurityGroupDetail, ICloudrunResource {
-  account: string;
-  moniker: IMoniker;
-}
 
 export interface ICloudrunServerGroup extends IServerGroup, ICloudrunResource {
   disabled: boolean;

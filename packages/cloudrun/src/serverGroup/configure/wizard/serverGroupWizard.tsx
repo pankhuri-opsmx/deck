@@ -1,18 +1,8 @@
-/* eslint-disable no-console */
 import React from 'react';
-
-/* import type { Application, ServerGroupWriter, IModalComponentProps } from '@spinnaker/core'; */
 import type { Application, IModalComponentProps, IStage } from '@spinnaker/core';
 import { noop, ReactInjector, ReactModal, TaskMonitor, WizardModal, WizardPage } from '@spinnaker/core';
-
-//import { CloudrunReactInjector } from '../../../../src/reactShims';
 import { WizardServerGroupBasicSettings } from './BasicSettings';
 import { WizardServerGroupConfigFilesSettings } from './ConfigFiles';
-
-//import { ManifestEntry } from './ManifestEntry';
-/* import type { ICloudrunManifestCommandData } from '../manifestCommandBuilder.service';
-import { CloudrunManifestCommandBuilder } from '../manifestCommandBuilder.service';
- */
 import type { ICloudrunServerGroupCommandData } from '../serverGroupCommandBuilder.service';
 import { CloudrunServerGroupCommandBuilder } from '../serverGroupCommandBuilder.service';
 
@@ -105,20 +95,7 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
   };
 
   private submit = (c: ICloudrunServerGroupCommandData): void => {
-    console.log('clog1', c);
     const command: any = CloudrunServerGroupCommandBuilder.copyAndCleanCommand(c.command);
-    console.log('clog2', command);
-    /*   const forPipelineConfig = command.viewState.mode === 'editPipeline' || command.viewState.mode === 'createPipeline';
-          if (forPipelineConfig) {
-              this.props.closeModal && this.props.closeModal(command);
-          } else {
-              this.state.taskMonitor.submit(() =>
-                  ReactInjector.serverGroupWriter.cloneServerGroup(command, this.props.application),
-              );
-          } */
-
-    // const submitMethod = () => ReactInjector.serverGroupWriter.cloneServerGroup(command, this.props.application) */
-    /* const submitMethod = () => ServerGroupWriter.deployManifest(command, this.props.application); */
     const submitMethod = () => ReactInjector.serverGroupWriter.cloneServerGroup(command, this.props.application);
     this.state.taskMonitor.submit(submitMethod);
   };
@@ -143,13 +120,6 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
               order={nextIdx()}
               render={({ innerRef }) => <WizardServerGroupBasicSettings ref={innerRef} formik={formik} />}
             />
-
-            {/*     <WizardPage
-              label="Manifest"
-              wizard={wizard}
-              order={nextIdx()}
-              render={({ innerRef }) => <ManifestEntry ref={innerRef} formik={formik} app={application} />}
-            /> */}
 
             <WizardPage
               label="Config Files"

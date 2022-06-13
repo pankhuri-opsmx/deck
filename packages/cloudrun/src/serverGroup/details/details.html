@@ -16,27 +16,6 @@
         <span class="glyphicon glyphicon-remove"></span>
       </a>
     </div>
-    <!--   <div class="header-text horizontal middle">
-      <cloud-provider-logo
-        provider="ctrl.serverGroup.cloudProvider"
-        height="'36px'"
-        width="'36px'"
-      ></cloud-provider-logo>
-      <h3 class="horizontal middle space-between flex-1" select-on-dbl-click>
-        {{ctrl.serverGroup.displayName}}
-        <render-if-feature feature="entityTags">
-          <entity-notifications
-            entity="ctrl.serverGroup"
-            application="ctrl.app"
-            placement="bottom"
-            h-offset-percent="90%"
-            entity-type="serverGroup"
-            page-location="details"
-            on-update="ctrl.app.serverGroups.refresh()"
-          ></entity-notifications>
-        </render-if-feature>
-      </h3>
-    </div> -->
     <div class="header-text horizontal middle">
       <cloud-provider-logo provider="ctrl.serverGroup.type" height="'36px'" width="'36px'"></cloud-provider-logo>
       <h3 class="horizontal middle space-between flex-1" select-on-dbl-click>{{ctrl.serverGroup.name}}</h3>
@@ -47,20 +26,6 @@
           Server Group Actions <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-          <!--  <li ng-if="ctrl.serverGroup.disabled">
-            <a href ng-click="ctrl.enableServerGroup()"> Enable </a>
-          </li>
-          <li ng-if="!ctrl.serverGroup.disabled && ctrl.canDisableServerGroup()">
-            <a href ng-click="ctrl.disableServerGroup()"> Disable </a>
-          </li>
-          <li
-            ng-if="!ctrl.serverGroup.disabled && !ctrl.canDisableServerGroup()"
-            uib-tooltip="You cannot disable a server group if it is the
-                           only server group receiving traffic from a load balancer."
-            class="disabled"
-          >
-            <a href> Disable </a>
-          </li> -->
           <li ng-if="ctrl.canDestroyServerGroup()">
             <a href ng-click="ctrl.destroyServerGroup()">Destroy</a>
           </li>
@@ -92,12 +57,6 @@
         <dd><account-tag account="ctrl.serverGroup.account"></account-tag></dd>
         <dt>Region</dt>
         <dd>{{ctrl.serverGroup.region}}</dd>
-        <!--    <appengine-conditional-dt-dd
-        component="ctrl.serverGroup"
-        key="env"
-        label="Environment"
-      ></appengine-conditional-dt-dd>
-      <appengine-conditional-dt-dd component="ctrl.serverGroup" key="instanceClass"></appengine-conditional-dt-dd> -->
       </dl>
     </collapsible-section>
 

@@ -1,20 +1,8 @@
-/* eslint-disable no-console */
 import type { FormikProps } from 'formik';
 import React from 'react';
-
 import type { IAccount } from '@spinnaker/core';
-//import { AccountSelectInput, HelpField, RegionSelectField } from '@spinnaker/core';
 import { AccountSelectInput, HelpField } from '@spinnaker/core';
-
-/* import type { ICloudrunManifestCommandData } from '../manifestCommandBuilder.service'; */
 import type { ICloudrunServerGroupCommandData } from '../serverGroupCommandBuilder.service';
-//import { helpContents } from '../../../help/cloudrun.help';
-
-/* const isExpressionLanguage = (field: string) => field && field.includes('${');
-const isStackPattern = (stack: string) =>
-  !isExpressionLanguage(stack) ? /^([a-zA-Z_0-9._${}]*(\${.+})*)*$/.test(stack) : true;
-const isDetailPattern = (detail: string) =>
-  !isExpressionLanguage(detail) ? /^([a-zA-Z_0-9._${}-]*(\${.+})*)*$/.test(detail) : true; */
 
 export interface IServerGroupBasicSettingsProps {
   accounts: IAccount[];
@@ -27,7 +15,6 @@ export interface IServerGroupBasicSettingsProps {
   // app: Application
 }
 
-//export function ServerGroupBasicSettings({ accounts, onAccountSelect, selectedAccount, onEnterRegion, formik, onEnterStack }: IServerGroupBasicSettingsProps) {
 export function ServerGroupBasicSettings({
   accounts,
   onAccountSelect,
@@ -36,7 +23,6 @@ export function ServerGroupBasicSettings({
   onEnterStack,
 }: IServerGroupBasicSettingsProps) {
   const { values } = formik;
-  console.log('formik', formik);
   //const { stack = "", credentials, regions } = values.command
   const { stack = '' } = values.command;
   //console.log("regions", regions)
@@ -46,9 +32,7 @@ export function ServerGroupBasicSettings({
   return (
     <div className="form-horizontal">
       <div className="form-group">
-        <div className="col-md-3 sm-label-right">
-          Account <HelpField id="cloudrun.ServerGroup.configFiles" />
-        </div>
+        <div className="col-md-3 sm-label-right">Account</div>
         <div className="col-md-7">
           <AccountSelectInput
             value={selectedAccount}
@@ -60,17 +44,6 @@ export function ServerGroupBasicSettings({
         </div>
 
         {/* as discussed with Kiran , region is already there in config file, no need to enter it from UI/ but retrieve it in health right side section*/}
-        {/*   <div className="col-md-3 sm-label-right">
-         Region
-        </div>
-        <div className="col-md-7">
-          <TextInput
-            className="form-control"
-            type="text"
-            value={region}
-            onChange={(e) => onEnterRegion(e.target.value)}
-          />
-        </div> */}
       </div>
 
       {/*       <RegionSelectField
@@ -112,6 +85,7 @@ export class WizardServerGroupBasicSettings extends React.Component<IWizardServe
     formik.setFieldValue('account', account);
   };
 
+  // commented for now : until region is established correctly as it is already present in config file
   /*   private regionUpdated = (region: string): void => {
       const { formik } = this.props;
       formik.values.command.region = region;
@@ -126,7 +100,6 @@ export class WizardServerGroupBasicSettings extends React.Component<IWizardServe
 
   public render() {
     const { formik } = this.props;
-    // const { errors, values } = formik;
     return (
       <ServerGroupBasicSettings
         accounts={formik.values.metadata?.backingData?.accounts || []}

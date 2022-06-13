@@ -21,12 +21,6 @@ class CloudrunLoadBalancerSettingsController implements IController {
         percent: 0,
         locatorType: 'fromExisting',
       });
-      /*  if (
-        this.loadBalancer.splitDescription.allocationDescriptions.length > 1 &&
-        !this.loadBalancer.splitDescription.shardBy
-      ) {
-        this.loadBalancer.splitDescription.shardBy = 'IP';
-      } */
       this.updateServerGroupOptions();
     } else if (this.forPipelineConfig) {
       this.loadBalancer.splitDescription.allocationDescriptions.push({
@@ -61,10 +55,6 @@ class CloudrunLoadBalancerSettingsController implements IController {
     } else {
       return this.serverGroupsWithoutAllocation().length > 0;
     }
-  }
-
-  public showShardByOptions(): boolean {
-    return this.loadBalancer.splitDescription.allocationDescriptions.length > 1 || this.loadBalancer.migrateTraffic;
   }
 
   public initializeAsTextInput(serverGroupName: string): boolean {

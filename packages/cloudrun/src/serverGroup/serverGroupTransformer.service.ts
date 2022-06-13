@@ -30,14 +30,9 @@ export class CloudrunV2ServerGroupTransformer {
 
   public convertServerGroupCommandToDeployConfiguration(base: ICloudrunServerGroupCommandData): any {
     const deployConfig = { ...base } as any;
-    // eslint-disable-next-line no-debugger
-    debugger;
+
     deployConfig.cloudProvider = 'cloudrun';
-    //deployConfig.availabilityZones = { [deployConfig.region]: base.availabilityZones };
-    // deployConfig.loadBalancers = (base.loadBalancers || []).concat(base.vpcLoadBalancers || []);
-    // deployConfig.targetGroups = base.targetGroups || [];
     deployConfig.account = deployConfig.credentials;
-    // deployConfig.subnetType = deployConfig.subnetType || '';
 
     const deleteFields = [
       'regions',

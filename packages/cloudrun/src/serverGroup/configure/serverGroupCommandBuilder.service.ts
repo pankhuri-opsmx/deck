@@ -1,14 +1,10 @@
-/* eslint-disable no-debugger */
 import { module } from 'angular';
-//import type { IQService } from 'angular';
-//import { load } from 'js-yaml';
 import { cloneDeep } from 'lodash';
 import { $q } from 'ngimport';
 
 import type {
   Application,
   IAccountDetails,
-  //IExpectedArtifact,
   IMoniker,
   IPipeline,
   IServerGroupCommand,
@@ -16,8 +12,6 @@ import type {
   IStage,
 } from '@spinnaker/core';
 import { AccountService } from '@spinnaker/core';
-
-//const LAST_APPLIED_CONFIGURATION = 'kubectl.cloudrun.io/last-applied-configuration';
 
 export enum ServerGroupSource {
   TEXT = 'text',
@@ -28,10 +22,6 @@ export interface ICloudrunServerGroupCommandData {
   command: ICloudrunServerGroupCommand;
   metadata: ICloudrunServerGroupCommandMetadata;
 }
-
-// export interface configFileData {
-//   configFile: string;
-// }
 
 export interface ICloudrunServerGroupCommand extends Omit<IServerGroupCommand, 'source' | 'application'> {
   application?: string;
@@ -92,24 +82,19 @@ const getSubmitButtonLabel = (mode: string): string => {
 };
 
 export class CloudrunV2ServerGroupCommandBuilder {
+  // new add servergroup
   public buildNewServerGroupCommand(app: Application): PromiseLike<ICloudrunServerGroupCommandData> {
     return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app);
   }
 
+  // add servergroup from deploy stage of pipeline
   public buildNewServerGroupCommandForPipeline(_stage: IStage, pipeline: IPipeline) {
-    // eslint-disable-next-line no-debugger
-    debugger;
     return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommandForPipeline(_stage, pipeline);
   }
 }
 
 export class CloudrunServerGroupCommandBuilder {
   public static $inject = ['$q'];
-  //constructor(private $q: IQService) {}
-
-  private static getExpectedArtifacts(pipeline: IPipeline): any[] {
-    return pipeline.expectedArtifacts || [];
-  }
 
   // TODO(lwander) add explanatory error messages
   public static ServerGroupCommandIsValid(command: ICloudrunServerGroupCommand): boolean {
@@ -129,35 +114,7 @@ export class CloudrunServerGroupCommandBuilder {
     return command;
   }
 
-  public static buildServerGroupCommandFromPipeline(
-    app: Application,
-    cluster: ICloudrunServerGroupCommand,
-    _stage: IStage,
-    pipeline: IPipeline,
-  ): PromiseLike<ICloudrunServerGroupCommandData> {
-    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'create').then(
-      (command: ICloudrunServerGroupCommandData) => {
-        debugger;
-        command = {
-          ...command,
-          ...cluster,
-          backingData: {
-            ...command.metadata.backingData.backingData,
-            // triggerOptions: AppengineServerGroupCommandBuilder.getTriggerOptions(pipeline),
-            expectedArtifacts: CloudrunServerGroupCommandBuilder.getExpectedArtifacts(pipeline),
-          },
-          credentials: cluster.account || command.metadata.backingData.credentials,
-          viewState: {
-            ...command.metadata.backingData.viewState,
-            stage: _stage,
-            pipeline,
-          },
-        } as ICloudrunServerGroupCommandData;
-        return command;
-      },
-    );
-  }
-
+  // deploy stage : construct servergroup command
   public static buildNewServerGroupCommandForPipeline(stage: IStage, pipeline: IPipeline): any {
     const command: any = this.buildNewServerGroupCommand({ name: pipeline.application } as Application);
     command.viewState = {
@@ -169,17 +126,12 @@ export class CloudrunServerGroupCommandBuilder {
     return command;
   }
 
+  // new servergroup command
   public static buildNewServerGroupCommand(
     app: Application,
-    /*  sourceManifest?: any,
-    sourceMoniker?: IMoniker, */
     sourceAccount?: string,
     mode = 'create',
   ): PromiseLike<ICloudrunServerGroupCommandData> {
-    /* if (sourceManifest != null && has(sourceManifest, ['metadata', 'annotations', LAST_APPLIED_CONFIGURATION])) {
-      sourceManifest = load(sourceManifest.metadata.annotations[LAST_APPLIED_CONFIGURATION]);
-    } */
-
     const dataToFetch = {
       accounts: AccountService.getAllAccountDetailsForProvider('cloudrun'),
       artifactAccounts: AccountService.getArtifactAccounts(),
@@ -203,11 +155,6 @@ export class CloudrunServerGroupCommandBuilder {
         submitButtonLabel: getSubmitButtonLabel(mode),
         disableStrategySelection: mode === 'create',
       };
-      /*    let manifestArtifactAccount: string = null;
-        const [artifactAccountData] = artifactAccounts;
-        if (artifactAccountData) {
-          manifestArtifactAccount = artifactAccountData.name;
-        } */
 
       //TODO : needs to be modified to [] at the time of integration
       const regions = backingData.accounts.some((a) => a.name === sourceAccount)
@@ -215,18 +162,6 @@ export class CloudrunServerGroupCommandBuilder {
         : ['us-central', 'india'];
       const credentials = account;
       const cloudProvider = 'cloudrun';
-      /*     const moniker = sourceMoniker || {
-          app: app.name,
-        };
-
-        const relationships = {
-          loadBalancers: [] as string[],
-          securityGroups: [] as string[],
-        }; */
-
-      // const versioned: any = null;
-      //  const provider = 'kubernetes';
-
       return {
         command: {
           application: app.name,
@@ -242,17 +177,7 @@ export class CloudrunServerGroupCommandBuilder {
           configArtifacts: [],
           interestingHealthProviderNames: [],
           fromArtifact: false,
-          /*     manifests: Array.isArray(sourceManifest)
-              ? sourceManifest
-              : sourceManifest != null
-              ? [sourceManifest]
-              : null,
-            relationships,
-            moniker, */
           account,
-          // versioned,
-          // manifestArtifactAccount,
-          // source: ManifestSource.TEXT,
           viewState,
         },
         metadata: {
