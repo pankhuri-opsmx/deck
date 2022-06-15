@@ -38,7 +38,7 @@ const requires = [
 module(CLOUDRUN_MODULE, requires).config(() => {
   CloudProviderRegistry.registerProvider('cloudrun', {
     name: 'cloudrun',
-    adHocInfrastructureWritesEnabled: SETTINGS.cloudrunAdHocInfraWritesEnabled,
+    //adHocInfrastructureWritesEnabled: SETTINGS.cloudrunAdHocInfraWritesEnabled,
     logo: {
       path: logo,
     },
