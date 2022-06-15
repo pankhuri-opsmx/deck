@@ -1,6 +1,6 @@
 import { module } from 'angular';
 
-import { CloudProviderRegistry, SETTINGS } from '@spinnaker/core';
+import { CloudProviderRegistry } from '@spinnaker/core';
 
 import { CLOUDRUN_LOAD_BALANCER_CREATE_MESSAGE } from './common/loadBalancerMessage.component';
 import './help/cloudrun.help';

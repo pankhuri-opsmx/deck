@@ -175,6 +175,12 @@ window.spinnakerSettings = {
         account: 'my-appengine-account',
       },
     },
+
+    cloudrun: {
+      defaults: {
+        account: 'my-cloudrun-account',
+      },
+    },
     aws: {
       defaults: {
         account: 'test',
@@ -248,7 +254,7 @@ window.spinnakerSettings = {
       },
     },
     kubernetes: {},
-    cloudrun: {},
+
     oracle: {
       defaults: {
         account: 'DEFAULT',
