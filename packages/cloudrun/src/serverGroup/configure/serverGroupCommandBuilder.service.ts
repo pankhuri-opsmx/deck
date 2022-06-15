@@ -13,6 +13,8 @@ import type {
 } from '@spinnaker/core';
 import { AccountService } from '@spinnaker/core';
 
+import { CloudrunProviderSettings } from '../../cloudrun.settings';
+
 export enum ServerGroupSource {
   TEXT = 'text',
   ARTIFACT = 'artifact',
@@ -126,6 +128,13 @@ export class CloudrunServerGroupCommandBuilder {
     return command;
   }
 
+  public static getCredentials(accounts: IAccountDetails[]): string {
+    const accountNames: string[] = (accounts || []).map((account) => account.name);
+    const defaultCredentials: string = CloudrunProviderSettings.defaults.account;
+
+    return accountNames.includes(defaultCredentials) ? defaultCredentials : accountNames[0];
+  }
+
   // new servergroup command
   public static buildNewServerGroupCommand(
     app: Application,
@@ -142,6 +151,7 @@ export class CloudrunServerGroupCommandBuilder {
     return $q.all(dataToFetch).then((backingData: { accounts: IAccountDetails[] }) => {
       const { accounts } = backingData;
 
+      //  const credentials = this.getCredentials(accounts);
       /*  .then((backingData: { accounts: IAccountDetails[]; artifactAccounts: IArtifactAccount[]}) => {
           const { accounts, artifactAccounts } = backingData; */
 
@@ -159,8 +169,8 @@ export class CloudrunServerGroupCommandBuilder {
       //TODO : needs to be modified to [] at the time of integration
       const regions = backingData.accounts.some((a) => a.name === sourceAccount)
         ? accounts.find((a) => a.name === sourceAccount).regions
-        : ['us-central', 'india'];
-      const credentials = account;
+        : [];
+      const credentials = account ? account : this.getCredentials(accounts);
       const cloudProvider = 'cloudrun';
       return {
         command: {
