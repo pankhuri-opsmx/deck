@@ -85,8 +85,6 @@ export class CloudrunLoadBalancerTransformer {
   public static $inject = ['$q'];
   constructor(private $q: ng.IQService) {}
   public normalizeLoadBalancer(loadBalancer: ILoadBalancer): PromiseLike<ILoadBalancer> {
-    // eslint-disable-next-line no-debugger
-    debugger;
     loadBalancer.provider = loadBalancer.type;
     loadBalancer.instanceCounts = this.buildInstanceCounts(loadBalancer.serverGroups);
     loadBalancer.instances = [];

@@ -6,6 +6,12 @@ const helpContents = [
     value:
       '(Optional) <b>Stack</b> is one of the core naming components of a cluster, used to create vertical stacks of dependent services for integration testing.',
   },
+
+  {
+    key: 'cloudrun.serverGroup.detail',
+    value:
+      ' (Optional) <b>Detail</b> is a string of free-form alphanumeric characters and hyphens to describe any other variables.',
+  },
   {
     key: 'cloudrun.serverGroup.configFiles',
     value: `<p> The contents of a Cloudrun config file (e.g., an <code>app.yaml</code> </p>`,

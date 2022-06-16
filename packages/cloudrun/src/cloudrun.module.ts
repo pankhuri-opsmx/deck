@@ -4,6 +4,7 @@ import { CloudProviderRegistry } from '@spinnaker/core';
 
 import { CLOUDRUN_LOAD_BALANCER_CREATE_MESSAGE } from './common/loadBalancerMessage.component';
 import './help/cloudrun.help';
+import { CLOUDRUN_INSTANCE_DETAILS_CTRL } from './instance/details/details.controller';
 import { CLOUDRUN_ALLOCATION_CONFIGURATION_ROW } from './loadBalancer/configure/wizard/allocationConfigurationRow.component';
 import { CLOUDRUN_LOAD_BALANCER_BASIC_SETTINGS } from './loadBalancer/configure/wizard/basicSettings.component';
 import { CLOUDRUN_STAGE_ALLOCATION_CONFIGURATION_ROW } from './loadBalancer/configure/wizard/stageAllocationConfigurationRow.component';
@@ -33,6 +34,7 @@ const requires = [
   CLOUDRUN_LOAD_BALANCER_BASIC_SETTINGS,
   CLOUDRUN_STAGE_ALLOCATION_CONFIGURATION_ROW,
   CLOUDRUN_PIPELINE_MODULE,
+  CLOUDRUN_INSTANCE_DETAILS_CTRL,
 ];
 
 module(CLOUDRUN_MODULE, requires).config(() => {
@@ -41,6 +43,11 @@ module(CLOUDRUN_MODULE, requires).config(() => {
     //adHocInfrastructureWritesEnabled: SETTINGS.cloudrunAdHocInfraWritesEnabled,
     logo: {
       path: logo,
+    },
+
+    instance: {
+      detailsTemplateUrl: require('./instance/details/details.html'),
+      detailsController: 'cloudrunInstanceDetailsCtrl',
     },
     serverGroup: {
       CloneServerGroupModal: ServerGroupWizard,
