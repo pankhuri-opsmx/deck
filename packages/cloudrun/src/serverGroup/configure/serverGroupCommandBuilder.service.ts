@@ -30,6 +30,7 @@ export interface ICloudrunServerGroupCommand extends Omit<IServerGroupCommand, '
   stack?: string;
   account: string;
   configFiles: string[];
+  freeFormDetails: string;
   region: string;
   regions: [];
   cloudProvider: string;
