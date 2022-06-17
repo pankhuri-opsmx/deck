@@ -19,13 +19,13 @@ class CloudrunLoadBalancerSettingsController implements IController {
       this.loadBalancer.splitDescription.allocationDescriptions.push({
         revisionName: remainingServerGroups[0],
         percent: 0,
-        locatorType: 'fromExisting',
+        // locatorType: 'fromExisting',
       });
       this.updateServerGroupOptions();
     } else if (this.forPipelineConfig) {
       this.loadBalancer.splitDescription.allocationDescriptions.push({
         percent: 0,
-        locatorType: 'text',
+        // locatorType: 'text',
         revisionName: '',
       });
     }

@@ -85,7 +85,6 @@ class CloudrunServerGroupDetailsController implements IController {
       let allocations = cloneDeep(loadBalancer.split.trafficTargets);
       delete allocations[serverGroup.name];
       const denominator = reduce(allocations, (partialSum: number, allocation: number) => partialSum + allocation, 0);
-      // const precision = loadBalancer.split.shardBy === 'COOKIE' ? 1000 : 100;
       allocations = mapValues(allocations, (allocation) => Math.round(allocation / denominator));
       return allocations;
     } else {

@@ -60,34 +60,6 @@
         </dd>
       </dl>
     </collapsible-section>
-    <collapsible-section heading="Metrics" expanded="true">
-      <dl>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="instanceStatus" label="Availability">
-          <key-label><help-field key="cloudrun.instance.availability"></help-field></key-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="averageLatency">
-          <key-label><help-field key="cloudrun.instance.averageLatency"></help-field></key-label>
-          <value-label>ms</value-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="errors">
-          <key-label><help-field key="cloudrun.instance.errors"></help-field></key-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="qps" label="QPS">
-          <key-label><help-field key="cloudrun.instance.qps"></help-field></key-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="requests">
-          <key-label><help-field key="cloudrun.instance.requests"></help-field></key-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd component="ctrl.instance" key="vmStatus" label="VM Status">
-          <key-label><help-field key="cloudrun.instance.vmStatus"></help-field></key-label>
-        </cloudrun-conditional-dt-dd>
-        <cloudrun-conditional-dt-dd
-          component="ctrl.instance"
-          key="vmDebugEnabled"
-          label="Debug Enabled"
-        ></cloudrun-conditional-dt-dd>
-      </dl>
-    </collapsible-section>
   </div>
   <div class="content" ng-if="!ctrl.state.loading && !ctrl.instance">
     <div class="content-section">

@@ -20,7 +20,7 @@ export interface ICloudrunAllocationDescription {
   cluster?: string;
   //allocation: number;
   percent: number;
-  locatorType: 'fromExisting' | 'targetCoordinate' | 'text';
+  // locatorType: 'fromExisting' | 'targetCoordinate' | 'text';
 }
 
 export interface ICloudrunTrafficSplitDescription {
@@ -76,7 +76,7 @@ export class CloudrunLoadBalancerUpsertDescription implements ILoadBalancerUpser
   public mapAllocationsToPercentages() {
     this.splitDescription.allocationDescriptions.forEach((description) => {
       // An allocation percent has at most one decimal place.
-      description.percent = Math.round(description.percent * 1000) / 1000;
+      description.percent = Math.round(description.percent);
     });
   }
 }

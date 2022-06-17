@@ -33,6 +33,7 @@ export interface ICloudrunServerGroupCommand extends Omit<IServerGroupCommand, '
   freeFormDetails: string;
   region: string;
   regions: [];
+  isNew?: boolean;
   cloudProvider: string;
   provider: string;
   selectedProvider: string;
@@ -77,8 +78,6 @@ const getSubmitButtonLabel = (mode: string): string => {
       return 'Add';
     case 'editPipeline':
       return 'Done';
-    case 'clone':
-      return 'Clone';
     default:
       return 'Create';
   }
@@ -126,7 +125,37 @@ export class CloudrunServerGroupCommandBuilder {
       requiresTemplateSelection: true,
       stage,
     };
+    // command.isNew = false
     return command;
+  }
+
+  public static buildServerGroupCommandFromPipeline(
+    app: Application,
+    cluster: ICloudrunServerGroupCommand,
+    _stage: IStage,
+    pipeline: IPipeline,
+  ): PromiseLike<ICloudrunServerGroupCommandData> {
+    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'create').then(
+      (command: ICloudrunServerGroupCommandData) => {
+        command = {
+          ...command,
+          ...cluster,
+          backingData: {
+            ...command.metadata.backingData.backingData,
+            // triggerOptions: AppengineServerGroupCommandBuilder.getTriggerOptions(pipeline),
+            //expectedArtifacts: CloudrunServerGroupCommandBuilder.getExpectedArtifacts(pipeline),
+          },
+          credentials: cluster.account || command.metadata.backingData.credentials,
+          viewState: {
+            ...command.metadata.backingData.viewState,
+            stage: _stage,
+            pipeline,
+          },
+          //isNew : false
+        } as ICloudrunServerGroupCommandData;
+        return command;
+      },
+    );
   }
 
   public static getCredentials(accounts: IAccountDetails[]): string {

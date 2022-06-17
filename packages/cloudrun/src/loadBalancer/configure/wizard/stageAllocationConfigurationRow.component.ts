@@ -11,41 +11,21 @@ class CloudrunStageAllocationLabelCtrl implements IController {
   public inputViewValue: string;
   private allocationDescription: ICloudrunAllocationDescription;
 
-  private static mapTargetCoordinateToLabel(targetCoordinate: string): string {
+  /* private static mapTargetCoordinateToLabel(targetCoordinate: string): string {
     const target = StageConstants.TARGET_LIST.find((t) => t.val === targetCoordinate);
     if (target) {
       return target.label;
     } else {
       return null;
     }
-  }
+  }  */
 
   public $doCheck(): void {
     this.setInputViewValue();
   }
 
   private setInputViewValue(): void {
-    switch (this.allocationDescription.locatorType) {
-      case 'text':
-        this.inputViewValue = this.allocationDescription.revisionName;
-        break;
-      case 'fromExisting':
-        this.inputViewValue = this.allocationDescription.revisionName;
-        break;
-      case 'targetCoordinate':
-        if (this.allocationDescription.cluster && this.allocationDescription.target) {
-          const targetLabel = CloudrunStageAllocationLabelCtrl.mapTargetCoordinateToLabel(
-            this.allocationDescription.target,
-          );
-          this.inputViewValue = `${targetLabel} (${this.allocationDescription.cluster})`;
-        } else {
-          this.inputViewValue = null;
-        }
-        break;
-      default:
-        this.inputViewValue = null;
-        break;
-    }
+    this.inputViewValue = this.allocationDescription.revisionName;
   }
 }
 

@@ -74,7 +74,7 @@ class CloudrunLoadBalancerWizardController implements IController {
 
   public submit(): any {
     const description = cloneDeep(this.loadBalancer);
-    description.mapAllocationsToDecimals();
+    description.mapAllocationsToPercentages();
     delete description.serverGroups;
 
     if (this.forPipelineConfig) {

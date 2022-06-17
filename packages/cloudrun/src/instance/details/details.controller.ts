@@ -33,8 +33,6 @@ class CloudrunInstanceDetailsController implements IController {
       .ready()
       .then(() => this.retrieveInstance(instance))
       .then((instanceDetails) => {
-        // eslint-disable-next-line no-debugger
-        debugger;
         this.instance = instanceDetails;
         this.state.loading = false;
       })
