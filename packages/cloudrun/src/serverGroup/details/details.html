@@ -43,7 +43,6 @@
     </div>
   </div>
   <div class="content" ng-if="!ctrl.state.loading">
-    <cloudrun-manifest-status status="ctrl.manifest.status"></cloudrun-manifest-status>
     <div class="band band-info" ng-if="ctrl.serverGroup.isDisabled || ctrl.serverGroup.disabled">Disabled</div>
     <server-group-running-tasks-details
       server-group="ctrl.serverGroup"

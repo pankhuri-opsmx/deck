@@ -1,20 +1,8 @@
 import type { IController, IScope } from 'angular';
 import { module } from 'angular';
-import { cloneDeep, map, mapValues, reduce } from 'lodash';
-import type {
-  Application,
-  IConfirmationModalParams,
-  ILoadBalancer,
-  IServerGroup,
-  ServerGroupWriter,
-} from '@spinnaker/core';
-import {
-  ConfirmationModalService,
-  SERVER_GROUP_WRITER,
-  ServerGroupReader,
-  ServerGroupWarningMessageService,
-} from '@spinnaker/core';
-
+import { cloneDeep, mapValues, reduce } from 'lodash';
+import type { Application, ILoadBalancer, IServerGroup, ServerGroupWriter } from '@spinnaker/core';
+import { ConfirmationModalService, SERVER_GROUP_WRITER, ServerGroupReader } from '@spinnaker/core';
 import { CloudrunHealth } from '../../common/cloudrunHealth';
 import type { ICloudrunLoadBalancer } from '../../common/domain/ICloudrunLoadBalancer';
 import type { ICloudrunServerGroup } from '../../interfaces';
@@ -28,30 +16,6 @@ interface IServerGroupFromStateParams {
 class CloudrunServerGroupDetailsController implements IController {
   public state = { loading: true };
   public serverGroup: ICloudrunServerGroup;
-
-  // allocation table to calculate the traffic to each loadbalancer which must sums up to 100 %
-  private static buildExpectedAllocationsTable(expectedAllocations: { [key: string]: number }): string {
-    const tableRows = map(expectedAllocations, (percent, revisionName) => {
-      return `
-        <tr>
-          <td>${revisionName}</td>
-          <td>${percent}%</td>
-        </tr>`;
-    }).join('');
-
-    return `
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>Server Group</th>
-            <th>Allocation</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${tableRows}
-        </tbody>
-      </table>`;
-  }
 
   public static $inject = ['$state', '$scope', 'serverGroup', 'app', 'serverGroupWriter'];
   constructor(
@@ -76,8 +40,10 @@ class CloudrunServerGroupDetailsController implements IController {
     app: Application,
   ): { [key: string]: number } {
     const loadBalancer = app.getDataSource('loadBalancers').data.find((toCheck: ICloudrunLoadBalancer): boolean => {
-      const allocations = toCheck.split?.trafficTargets ?? {};
-      const enabledServerGroups = Object.keys(allocations);
+      const allocations = toCheck.split?.trafficTargets ?? [];
+      const enabledServerGroups = allocations
+        .filter(({ percent }) => percent === 0)
+        .map((allocations) => allocations.revisionName);
       return enabledServerGroups.includes(serverGroup.name);
     });
 
@@ -138,7 +104,7 @@ class CloudrunServerGroupDetailsController implements IController {
       askForReason: true,
       platformHealthOnlyShowOverride: this.app.attributes.platformHealthOnlyShowOverride,
       platformHealthType: CloudrunHealth.PLATFORM,
-      body: this.getBodyTemplate(this.serverGroup, this.app),
+
       interestingHealthProviderNames: [] as string[],
     };
 
@@ -147,43 +113,6 @@ class CloudrunServerGroupDetailsController implements IController {
     }
 
     ConfirmationModalService.confirm(confirmationModalParams);
-  }
-
-  private getBodyTemplate(serverGroup: ICloudrunServerGroup, app: Application): string {
-    let template = '';
-    const params: IConfirmationModalParams = {};
-    ServerGroupWarningMessageService.addDestroyWarningMessage(app, serverGroup, params);
-    if (params.body) {
-      template += params.body;
-    }
-
-    if (!serverGroup.disabled) {
-      const expectedAllocations = this.expectedAllocationsAfterDisableOperation(serverGroup, app);
-
-      template += `
-        <div class="well well-sm">
-          <p>
-            A destroy operation will first disable this server group.
-          </p>
-          <p>
-            For CloudRun, a disable operation sets this server group's allocation
-            to 0% and sets the other enabled server groups' allocations to their relative proportions
-            before the disable operation. The approximate allocations that will result from this operation are shown below.
-          </p>
-          <p>
-            If you would like more fine-grained control over your server groups' allocations,
-            edit <b>${serverGroup.loadBalancers[0]}</b> under the <b>Load Balancers</b> tab.
-          </p>
-          <div class="row">
-            <div class="col-md-12">
-              ${CloudrunServerGroupDetailsController.buildExpectedAllocationsTable(expectedAllocations)}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    return template;
   }
 
   private autoClose(): void {
@@ -225,7 +154,6 @@ class CloudrunServerGroupDetailsController implements IController {
     );
   }
 }
-
 export const CLOUDRUN_SERVER_GROUP_DETAILS_CTRL = 'spinnaker.cloudrun.serverGroup.details.controller';
 
 module(CLOUDRUN_SERVER_GROUP_DETAILS_CTRL, [SERVER_GROUP_WRITER]).controller(

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Application, IModalComponentProps, IStage } from '@spinnaker/core';
+//import type { IModalInstanceService } from 'angular-ui-bootstrap';
 import { noop, ReactInjector, ReactModal, TaskMonitor, WizardModal, WizardPage } from '@spinnaker/core';
 import { WizardServerGroupBasicSettings } from './BasicSettings';
 import { WizardServerGroupConfigFilesSettings } from './ConfigFiles';
@@ -36,10 +37,12 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
   constructor(props: ICloudrunServerGroupModalProps) {
     super(props);
     if (!props.command) {
-      CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(props.application).then((command) => {
-        Object.assign(this.state.command, command);
-        this.setState({ loaded: true });
-      });
+      CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(props.application, 'cloudrun', 'create').then(
+        (command) => {
+          Object.assign(this.state.command, command);
+          this.setState({ loaded: true });
+        },
+      );
     }
 
     this.state = {
@@ -47,7 +50,9 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
       command: props.command || ({} as ICloudrunServerGroupCommandData),
       taskMonitor: new TaskMonitor({
         application: props.application,
-        title: `${this.props.isNew ? 'Creating' : 'Updating'} your Server Group`,
+        title: `${
+          props.command.command.viewState.submitButtonLabel === 'Create' ? 'Creating' : 'Updating'
+        } your Server Group`,
         modalInstance: TaskMonitor.modalInstanceEmulation(() => this.props.dismissModal()),
         onTaskComplete: this.onTaskComplete,
       }),
@@ -96,22 +101,38 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
 
   private submit = (c: ICloudrunServerGroupCommandData): void => {
     const command: any = CloudrunServerGroupCommandBuilder.copyAndCleanCommand(c.command);
-    const submitMethod = () => ReactInjector.serverGroupWriter.cloneServerGroup(command, this.props.application);
-    this.state.taskMonitor.submit(submitMethod);
+
+    //const mode = command.viewState.mode;
+    /*  if (['editPipeline', 'createPipeline'].includes(mode)) {
+       //return this.$uibModalInstance.close(this.props.command);
+       
+       this.state.taskMonitor.modalInstance.close(this.props.command)
+     } */
+
+    const forPipelineConfig = command.viewState.mode === 'editPipeline' || command.viewState.mode === 'createPipeline';
+    if (forPipelineConfig) {
+      this.props.closeModal && this.props.closeModal(command);
+    } else {
+      //command.viewState.mode = 'create';
+      const submitMethod = () => ReactInjector.serverGroupWriter.cloneServerGroup(command, this.props.application);
+      this.state.taskMonitor.submit(submitMethod);
+      return null;
+    }
   };
   public render() {
-    const { dismissModal, isNew } = this.props;
+    const { dismissModal } = this.props;
     const { loaded, taskMonitor, command } = this.state;
+    const labelButton = this.state.command.command.viewState.submitButtonLabel;
 
     return (
       <WizardModal<ICloudrunServerGroupCommandData>
-        heading={`${isNew ? 'Create New' : 'Update'} Server Group`}
+        heading={`${labelButton === 'Add' || labelButton === 'Create' ? 'Create New' : 'Update'} Server Group`}
         initialValues={command}
         loading={!loaded}
         taskMonitor={taskMonitor}
         dismissModal={dismissModal}
         closeModal={this.submit}
-        submitButtonLabel={isNew ? 'Create' : 'Edit'}
+        submitButtonLabel={labelButton}
         render={({ formik, nextIdx, wizard }) => (
           <>
             <WizardPage

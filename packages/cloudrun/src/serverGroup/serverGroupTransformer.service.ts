@@ -2,7 +2,7 @@ import { module } from 'angular';
 import type { Application } from '@spinnaker/core';
 import type { ICloudrunServerGroup, ICloudrunServerGroupManager } from '../interfaces';
 
-import type { ICloudrunServerGroupCommandData } from '../serverGroup/configure/serverGroupCommandBuilder.service';
+import type { ICloudrunServerGroupCommand } from '../serverGroup/configure/serverGroupCommandBuilder.service';
 
 export class CloudrunV2ServerGroupTransformer {
   public normalizeServerGroup(
@@ -28,8 +28,9 @@ export class CloudrunV2ServerGroupTransformer {
       });
   }
 
-  public convertServerGroupCommandToDeployConfiguration(base: ICloudrunServerGroupCommandData): any {
-    const deployConfig = { ...base } as any;
+  public convertServerGroupCommandToDeployConfiguration(command: ICloudrunServerGroupCommand): any {
+    return new CloudrunDeployDescription(command);
+    /*  const deployConfig = { ...base } as any;
 
     deployConfig.cloudProvider = 'cloudrun';
     deployConfig.account = deployConfig.credentials;
@@ -45,7 +46,6 @@ export class CloudrunV2ServerGroupTransformer {
       'manifest',
       'manifests',
       'moniker',
-      'stack',
       'versioned',
       'availabilityZones',
       'source',
@@ -54,7 +54,45 @@ export class CloudrunV2ServerGroupTransformer {
       delete deployConfig[key];
     });
 
-    return deployConfig;
+    return deployConfig; */
+  }
+}
+
+export class CloudrunDeployDescription {
+  public cloudProvider = 'cloudrun';
+  public provider = 'cloudrun';
+  public credentials: string;
+  public account: string;
+  public application: string;
+  public stack?: string;
+  public freeFormDetails?: string;
+  public configFiles: string[];
+  public region: string;
+  public strategy?: string;
+  public type?: string;
+  public fromArtifact: boolean;
+  public configArtifacts: string[];
+  public strategyApplication?: string;
+  public strategyPipeline?: string;
+  public gitCredentialType: string;
+  public interestingHealthProviderNames: string[];
+  public sourceType: string;
+
+  constructor(command: ICloudrunServerGroupCommand) {
+    this.credentials = command.credentials;
+    this.account = command.credentials;
+    this.application = command.application;
+    this.stack = command.stack;
+    this.freeFormDetails = command.freeFormDetails;
+    this.region = command.region;
+    this.strategy = command.strategy;
+    this.type = command.type;
+    this.fromArtifact = command.fromArtifact;
+    this.gitCredentialType = command.gitCredentialType;
+    this.configFiles = command.configFiles;
+    this.sourceType = command.sourceType;
+    this.interestingHealthProviderNames = command.interestingHealthProviderNames || [];
+    this.configArtifacts = [];
   }
 }
 
