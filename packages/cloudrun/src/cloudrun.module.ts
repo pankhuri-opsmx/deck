@@ -2,6 +2,7 @@ import { module } from 'angular';
 
 import { CloudProviderRegistry } from '@spinnaker/core';
 
+import { CLOUDRUN_COMPONENT_URL_DETAILS } from './common/componentUrlDetails.component';
 import { CLOUDRUN_LOAD_BALANCER_CREATE_MESSAGE } from './common/loadBalancerMessage.component';
 import './help/cloudrun.help';
 import { CLOUDRUN_INSTANCE_DETAILS_CTRL } from './instance/details/details.controller';
@@ -23,6 +24,7 @@ import './logo/cloudrun.logo.less';
 export const CLOUDRUN_MODULE = 'spinnaker.cloudrun';
 
 const requires = [
+  CLOUDRUN_COMPONENT_URL_DETAILS,
   CLOUDRUN_SERVER_GROUP_COMMAND_BUILDER,
   CLOUDRUN_SERVER_GROUP_DETAILS_CTRL,
   CLOUDRUN_SERVER_GROUP_TRANSFORMER,

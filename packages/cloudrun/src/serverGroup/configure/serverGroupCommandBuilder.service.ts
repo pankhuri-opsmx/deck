@@ -28,6 +28,7 @@ export interface ICloudrunServerGroupCommandData {
 export interface ICloudrunServerGroupCommand extends Omit<IServerGroupCommand, 'source' | 'application'> {
   application?: string;
   stack?: string;
+  detail?: string;
   account: string;
   configFiles: string[];
   freeFormDetails: string;
@@ -86,12 +87,23 @@ const getSubmitButtonLabel = (mode: string): string => {
 export class CloudrunV2ServerGroupCommandBuilder {
   // new add servergroup
   public buildNewServerGroupCommand(app: Application): PromiseLike<ICloudrunServerGroupCommandData> {
-    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app);
+    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'create');
   }
 
   // add servergroup from deploy stage of pipeline
   public buildNewServerGroupCommandForPipeline(_stage: IStage, pipeline: IPipeline) {
     return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommandForPipeline(_stage, pipeline);
+  }
+
+  // edit servergroup from deploy stage of pipeline
+  // add servergroup from deploy stage of pipeline
+  public buildServerGroupCommandFromPipeline(
+    app: Application,
+    cluster: ICloudrunServerGroupCommand,
+    _stage: IStage,
+    pipeline: IPipeline,
+  ) {
+    return CloudrunServerGroupCommandBuilder.buildServerGroupCommandFromPipeline(app, cluster, _stage, pipeline);
   }
 }
 
@@ -118,7 +130,11 @@ export class CloudrunServerGroupCommandBuilder {
 
   // deploy stage : construct servergroup command
   public static buildNewServerGroupCommandForPipeline(stage: IStage, pipeline: IPipeline): any {
-    const command: any = this.buildNewServerGroupCommand({ name: pipeline.application } as Application);
+    const command: any = this.buildNewServerGroupCommand(
+      { name: pipeline.application } as Application,
+      'cloudrun',
+      'createPipeline',
+    );
     command.viewState = {
       ...command.viewState,
       pipeline,
@@ -135,15 +151,13 @@ export class CloudrunServerGroupCommandBuilder {
     _stage: IStage,
     pipeline: IPipeline,
   ): PromiseLike<ICloudrunServerGroupCommandData> {
-    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'create').then(
+    return CloudrunServerGroupCommandBuilder.buildNewServerGroupCommand(app, 'cloudrun', 'editPipeline').then(
       (command: ICloudrunServerGroupCommandData) => {
         command = {
           ...command,
           ...cluster,
           backingData: {
             ...command.metadata.backingData.backingData,
-            // triggerOptions: AppengineServerGroupCommandBuilder.getTriggerOptions(pipeline),
-            //expectedArtifacts: CloudrunServerGroupCommandBuilder.getExpectedArtifacts(pipeline),
           },
           credentials: cluster.account || command.metadata.backingData.credentials,
           viewState: {
@@ -168,8 +182,8 @@ export class CloudrunServerGroupCommandBuilder {
   // new servergroup command
   public static buildNewServerGroupCommand(
     app: Application,
-    sourceAccount?: string,
-    mode = 'create',
+    sourceAccount: string,
+    mode: string,
   ): PromiseLike<ICloudrunServerGroupCommandData> {
     const dataToFetch = {
       accounts: AccountService.getAllAccountDetailsForProvider('cloudrun'),
@@ -205,7 +219,7 @@ export class CloudrunServerGroupCommandBuilder {
       return {
         command: {
           application: app.name,
-          configFiles: [''],
+          configFiles: [],
           cloudProvider,
           selectedProvider: cloudProvider,
           provider: cloudProvider,
