@@ -216,10 +216,13 @@ export class CloudrunServerGroupCommandBuilder {
         : [];
       const credentials = account ? account : this.getCredentials(accounts);
       const cloudProvider = 'cloudrun';
+
+      // eslint-disable-next-line no-debugger
+      debugger;
       return {
         command: {
           application: app.name,
-          configFiles: [],
+          configFiles: [''],
           cloudProvider,
           selectedProvider: cloudProvider,
           provider: cloudProvider,
