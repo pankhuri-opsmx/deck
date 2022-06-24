@@ -13,12 +13,12 @@ type configFiles = IServerGroupConfigFilesSettingsProps['configFiles'];
 export function ServerGroupConfigFilesSettings({ configFiles, onEnterConfig }: IServerGroupConfigFilesSettingsProps) {
   const [configValues, setConfigValues] = useState<configFiles>(configFiles);
 
-  const deleteConfig = (i: number) => {
-    const newConfigValues = [...configValues];
-    newConfigValues.splice(i, 1);
-    setConfigValues(newConfigValues);
-    onEnterConfig(newConfigValues);
-  };
+  /*   const deleteConfig = (i: number) => {
+      const newConfigValues = [...configValues];
+      newConfigValues.splice(i, 1);
+      setConfigValues(newConfigValues);
+      onEnterConfig(newConfigValues);
+    }; */
   function mapTabToSpaces(event: any, i: number) {
     if (event.which === 9) {
       event.preventDefault();
@@ -33,12 +33,12 @@ export function ServerGroupConfigFilesSettings({ configFiles, onEnterConfig }: I
     onEnterConfig(newConfigValues);
   }
 
-  const addConfigFile = () => {
-    const newConfigValues = [...configValues];
-    newConfigValues.push('');
-    setConfigValues(newConfigValues);
-    onEnterConfig(newConfigValues);
-  };
+  /*  const addConfigFile = () => {
+     const newConfigValues = [...configValues];
+     newConfigValues.push('');
+     setConfigValues(newConfigValues);
+     onEnterConfig(newConfigValues);
+   }; */
 
   return (
     <div className="form-horizontal">
@@ -56,20 +56,21 @@ export function ServerGroupConfigFilesSettings({ configFiles, onEnterConfig }: I
                 onChange={(e) => mapTabToSpaces(e, index)}
               />
             </div>
-            <div className="col-md-1">
+            {/* Not reqiured right now as we do not have support deploy multiple services*/}
+            {/*   <div className="col-md-1">
               <button type="button" className="btn btn-sm btn-default" onClick={() => deleteConfig(index)}>
                 <span className="glyphicon glyphicon-trash" /> Delete
               </button>
-            </div>
+            </div> */}
           </>
         ))}
       </div>
-
-      <div className="col-md-7 col-md-offset-3">
+      {/* Not reqiured right now as we do not have support deploy multiple services*/}
+      {/*    <div className="col-md-7 col-md-offset-3">
         <button type="button" className="btn btn-block btn-add-trigger add-new" onClick={addConfigFile}>
           <span className="glyphicon glyphicon-plus-sign" /> Add Config File
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

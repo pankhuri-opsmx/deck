@@ -120,7 +120,7 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
     }
   };
   public render() {
-    const { dismissModal } = this.props;
+    const { dismissModal, application } = this.props;
     const { loaded, taskMonitor, command } = this.state;
     const labelButton = this.state.command.command.viewState.submitButtonLabel;
 
@@ -139,7 +139,9 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
               label="Basic Settings"
               wizard={wizard}
               order={nextIdx()}
-              render={({ innerRef }) => <WizardServerGroupBasicSettings ref={innerRef} formik={formik} />}
+              render={({ innerRef }) => (
+                <WizardServerGroupBasicSettings ref={innerRef} formik={formik} app={application} />
+              )}
             />
 
             <WizardPage

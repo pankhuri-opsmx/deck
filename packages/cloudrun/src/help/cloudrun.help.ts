@@ -56,7 +56,7 @@ const helpContents = [
   },
   {
     key: 'cloudrun.serverGroup.configFiles',
-    value: `<p> The contents of a Cloudrun config file (e.g., an <code>app.yaml</code> </p>`,
+    value: `<p> The contents of a Cloudrun config file </p>`,
   },
   {
     key: 'cloudrun.loadBalancer.allocations',
