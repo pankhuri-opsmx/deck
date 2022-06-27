@@ -30,31 +30,6 @@ export class CloudrunV2ServerGroupTransformer {
 
   public convertServerGroupCommandToDeployConfiguration(command: ICloudrunServerGroupCommand): any {
     return new CloudrunDeployDescription(command);
-    /*  const deployConfig = { ...base } as any;
-
-    deployConfig.cloudProvider = 'cloudrun';
-    deployConfig.account = deployConfig.credentials;
-
-    const deleteFields = [
-      'regions',
-      'viewState',
-      'backingData',
-      'selectedProvider',
-      'instanceProfile',
-      'vpcId',
-      'relationships',
-      'manifest',
-      'manifests',
-      'moniker',
-      'versioned',
-      'availabilityZones',
-      'source',
-    ];
-    deleteFields.forEach((key: keyof typeof deployConfig) => {
-      delete deployConfig[key];
-    });
-
-    return deployConfig; */
   }
 }
 

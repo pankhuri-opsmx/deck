@@ -5,6 +5,7 @@ import { $q } from 'ngimport';
 import type {
   Application,
   IAccountDetails,
+  IExpectedArtifact,
   IMoniker,
   IPipeline,
   IServerGroupCommand,
@@ -14,6 +15,7 @@ import type {
 import { AccountService } from '@spinnaker/core';
 
 import { CloudrunProviderSettings } from '../../cloudrun.settings';
+import type { CloudrunDeployDescription } from '../serverGroupTransformer.service';
 
 export enum ServerGroupSource {
   TEXT = 'text',
@@ -23,6 +25,9 @@ export enum ServerGroupSource {
 export interface ICloudrunServerGroupCommandData {
   command: ICloudrunServerGroupCommand;
   metadata: ICloudrunServerGroupCommandMetadata;
+  stack: string;
+  freeFormDetails: string;
+  configFiles: string[];
 }
 
 export interface ICloudrunServerGroupCommand extends Omit<IServerGroupCommand, 'source' | 'application'> {
@@ -99,7 +104,7 @@ export class CloudrunV2ServerGroupCommandBuilder {
   // add servergroup from deploy stage of pipeline
   public buildServerGroupCommandFromPipeline(
     app: Application,
-    cluster: ICloudrunServerGroupCommand,
+    cluster: CloudrunDeployDescription,
     _stage: IStage,
     pipeline: IPipeline,
   ) {
@@ -145,9 +150,13 @@ export class CloudrunServerGroupCommandBuilder {
     return command;
   }
 
+  private static getExpectedArtifacts(pipeline: IPipeline): IExpectedArtifact[] {
+    return pipeline.expectedArtifacts || [];
+  }
+
   public static buildServerGroupCommandFromPipeline(
     app: Application,
-    cluster: ICloudrunServerGroupCommand,
+    cluster: CloudrunDeployDescription,
     _stage: IStage,
     pipeline: IPipeline,
   ): PromiseLike<ICloudrunServerGroupCommandData> {
@@ -156,8 +165,11 @@ export class CloudrunServerGroupCommandBuilder {
         command = {
           ...command,
           ...cluster,
+
           backingData: {
             ...command.metadata.backingData.backingData,
+            //   triggerOptions: CloudrunServerGroupCommandBuilder.getTriggerOptions(pipeline),
+            expectedArtifacts: CloudrunServerGroupCommandBuilder.getExpectedArtifacts(pipeline),
           },
           credentials: cluster.account || command.metadata.backingData.credentials,
           viewState: {
@@ -165,6 +177,7 @@ export class CloudrunServerGroupCommandBuilder {
             stage: _stage,
             pipeline,
           },
+
           //isNew : false
         } as ICloudrunServerGroupCommandData;
         return command;
@@ -177,6 +190,11 @@ export class CloudrunServerGroupCommandBuilder {
     const defaultCredentials: string = CloudrunProviderSettings.defaults.account;
 
     return accountNames.includes(defaultCredentials) ? defaultCredentials : accountNames[0];
+  }
+
+  public static getRegion(accounts: any[], credentials: string): string {
+    const account = accounts.find((_account) => _account.name === credentials);
+    return account ? account.region : null;
   }
 
   // new servergroup command
@@ -211,14 +229,15 @@ export class CloudrunServerGroupCommandBuilder {
       };
 
       //TODO : needs to be modified to [] at the time of integration
-      const regions = backingData.accounts.some((a) => a.name === sourceAccount)
+
+      /*  const regions = backingData.accounts.some((a) => a.name === sourceAccount)
         ? accounts.find((a) => a.name === sourceAccount).regions
-        : [];
+        : []; */
+
       const credentials = account ? account : this.getCredentials(accounts);
+      const region = this.getRegion(backingData.accounts, credentials);
       const cloudProvider = 'cloudrun';
 
-      // eslint-disable-next-line no-debugger
-      debugger;
       return {
         command: {
           application: app.name,
@@ -226,7 +245,7 @@ export class CloudrunServerGroupCommandBuilder {
           cloudProvider,
           selectedProvider: cloudProvider,
           provider: cloudProvider,
-          regions,
+          region,
           credentials,
           gitCredentialType: 'NONE',
           manifest: null,
