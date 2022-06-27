@@ -46,7 +46,8 @@ export function ServerGroupConfigFilesSettings({ configFiles, onEnterConfig }: I
         {configValues.map((configFile, index) => (
           <>
             <div className="col-md-3 sm-label-right">
-              ConfigFile <HelpField id="cloudrun.serverGroup.configFiles" />{' '}
+              Service Yaml
+              <HelpField id="cloudrun.serverGroup.configFiles" />{' '}
             </div>
             <div className="col-md-7" key={index}>
               <TextAreaInput
@@ -91,7 +92,7 @@ export class WizardServerGroupConfigFilesSettings extends React.Component<IWizar
     const { formik } = this.props;
     return (
       <ServerGroupConfigFilesSettings
-        configFiles={formik.values.command.configFiles}
+        configFiles={formik.values.configFiles || formik.values.command.configFiles}
         onEnterConfig={this.configUpdated}
       />
     );

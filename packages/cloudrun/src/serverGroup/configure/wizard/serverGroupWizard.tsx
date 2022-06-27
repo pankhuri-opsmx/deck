@@ -145,7 +145,7 @@ export class ServerGroupWizard extends React.Component<ICloudrunServerGroupModal
             />
 
             <WizardPage
-              label="Config Files"
+              label="Service Yaml"
               wizard={wizard}
               order={nextIdx()}
               render={({ innerRef }) => <WizardServerGroupConfigFilesSettings ref={innerRef} formik={formik} />}

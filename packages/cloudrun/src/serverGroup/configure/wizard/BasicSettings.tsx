@@ -1,5 +1,3 @@
-/* eslint-disable no-debugger */
-
 import type { FormikProps } from 'formik';
 import React from 'react';
 
@@ -34,7 +32,7 @@ export function ServerGroupBasicSettings({
   app,
 }: IServerGroupBasicSettingsProps) {
   const { values } = formik;
-  const { stack = '', freeFormDetails } = values.command;
+  const { stack = '', freeFormDetails } = values;
 
   const namePreview = NameUtils.getClusterName(app.name, stack, freeFormDetails);
   const createsNewCluster = !app.clusters.find((c) => c.name === namePreview);
@@ -103,7 +101,7 @@ export function ServerGroupBasicSettings({
           <input
             type="text"
             className="form-control input-sm no-spel"
-            value={values.command.freeFormDetails}
+            value={freeFormDetails}
             onChange={(e) => detailsChanged(e.target.value)}
           />
         </div>

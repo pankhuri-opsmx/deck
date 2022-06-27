@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { module } from 'angular';
 import { camelCase, chain, cloneDeep, filter, get, has, reduce } from 'lodash';
 
@@ -14,17 +13,13 @@ import type {
 import type { ICloudrunLoadBalancer, ICloudrunTrafficSplit } from '../common/domain/index';
 
 export interface ICloudrunAllocationDescription {
-  //serverGroupName?: string;
   revisionName?: string;
   target?: string;
   cluster?: string;
-  //allocation: number;
   percent: number;
-  // locatorType: 'fromExisting' | 'targetCoordinate' | 'text';
 }
 
 export interface ICloudrunTrafficSplitDescription {
-  //shardBy: ShardBy;
   allocationDescriptions: ICloudrunAllocationDescription[];
 }
 
@@ -47,12 +42,10 @@ export class CloudrunLoadBalancerUpsertDescription implements ILoadBalancerUpser
       split.trafficTargets,
       (acc: any, trafficTarget: any) => {
         const { revisionName, percent } = trafficTarget;
-        //console.log("trafficTarget",trafficTarget,acc, revisionName, percent)
         return acc.concat({ percent, revisionName, locatorType: 'fromExisting' });
       },
       [],
     );
-    // console.log(allocationDescriptions)
     return { allocationDescriptions };
   }
 
