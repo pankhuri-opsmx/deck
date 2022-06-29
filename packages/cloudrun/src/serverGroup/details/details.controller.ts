@@ -57,17 +57,17 @@ class CloudrunServerGroupDetailsController implements IController {
       return null;
     }
   }
-
   // destroy existing server group
   public canDestroyServerGroup(): boolean {
     if (this.serverGroup) {
-      if (this.serverGroup.disabled) {
-        return true;
-      }
-
       const expectedAllocations = this.expectedAllocationsAfterDisableOperation(this.serverGroup, this.app);
+      const isCurrentRevision = this.serverGroup.tags.isLatest;
       if (expectedAllocations) {
         return Object.keys(expectedAllocations).length > 0;
+      } else if (isCurrentRevision) {
+        return false;
+      } else if (this.serverGroup.disabled) {
+        return true;
       } else {
         return false;
       }
