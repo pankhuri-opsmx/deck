@@ -1,6 +1,6 @@
 import { module } from 'angular';
 
-import { CloudProviderRegistry } from '@spinnaker/core';
+import { CloudProviderRegistry, DeploymentStrategyRegistry } from '@spinnaker/core';
 
 import { CLOUDRUN_COMPONENT_URL_DETAILS } from './common/componentUrlDetails.component';
 import { CLOUDRUN_LOAD_BALANCER_CREATE_MESSAGE } from './common/loadBalancerMessage.component';
@@ -68,3 +68,5 @@ module(CLOUDRUN_MODULE, requires).config(() => {
     },
   });
 });
+
+DeploymentStrategyRegistry.registerProvider('cloudrun', ['custom', 'redblack', 'rollingpush', 'rollingredblack']);
